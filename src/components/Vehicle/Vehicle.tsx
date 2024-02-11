@@ -6,7 +6,6 @@ import { isMobile } from "react-device-detect";
 import { useControls } from "../../hooks/use-controls";
 
 import { useBeforePhysicsStep } from "@react-three/rapier";
-import { useControls as useLeva } from "leva";
 import { Vector3 } from "three";
 import { useScroll, OrbitControls } from "@react-three/drei";
 
@@ -36,12 +35,6 @@ export default function Vehicle({
   setIsCubesFlying,
   isCubesFalled,
 }: VehicleProps) {
-  const { cameraMode } = useLeva("camera", {
-    cameraMode: {
-      value: "drive",
-      options: ["drive", "orbit"],
-    },
-  });
   const [brakeMobile, setBrakeMobile] = useState(false);
   const [resetVechicle, setResetVehicle] = useState(true);
   const controls = useControls();
@@ -191,8 +184,6 @@ export default function Vehicle({
   });
 
   useFrame((state, delta) => {
-    if (cameraMode !== "drive") return;
-
     const chassis = raycastVehicle.current?.chassisRigidBody;
     if (!chassis?.current) return;
 
@@ -303,11 +294,8 @@ export default function Vehicle({
   });
 
   return (
-    <>
-      {cameraMode === "orbit" && <OrbitControls />}
-      {resetVechicle && (
-        <VehicleModel ref={raycastVehicle} resetVechicle={resetVechicle} />
-      )}
-    </>
+    resetVechicle && (
+      <VehicleModel ref={raycastVehicle} resetVechicle={resetVechicle} />
+    )
   );
 }
